@@ -5,8 +5,7 @@ import org.openqa.selenium.WebDriver;
 
 import com.shaft.gui.browser.BrowserActions;
 import com.shaft.gui.element.ElementActions;
-import com.shaft.validation.Verifications;
-import com.shaft.validation.Verifications.VerificationType;
+
 
 public class Home {
 	private WebDriver driver;
@@ -18,6 +17,8 @@ public class Home {
 	private By orderName_text = By.xpath("//table/tbody//td/b[@class='ng-binding']");
 	private By orderPrice_text = By
 			.xpath("//table/tbody//td[contains(@class,'price-td')]/label[contains(@class,'ng-binding')]");
+	private By orderaddress_text = By.xpath("//div[contains(@class,'rest-name')]//span");
+	private By restaurantName = By.xpath("//a[@class='ng-binding']");
 	private By removeOrder_button = By.xpath("//label[@ng-click='removeItem(item)']");
 	private By orderQuantity_text = By.xpath("//span[@class='f-11']/b");
 	private By email_input = By.xpath("//input[@type='email']");
@@ -78,10 +79,16 @@ public class Home {
 		return OrderQuantity;
 	}
 
-	// verify My Orders disappears after removing an order
-	public void verifyElementDisappeared() {
-		Verifications.verifyElementExists(driver, myOrders_button, VerificationType.NEGATIVE,
-				"the element dissappeared which means the test passed");
+	// get Order price method
+	public String getOrderAddress() {
+		String OrderAddress = ElementActions.getText(driver, orderaddress_text);
+		return OrderAddress;
+	}
+
+	// get Restaurant Name method
+	public String getRestaurantName() {
+		String RestaurantName = ElementActions.getText(driver, restaurantName);
+		return RestaurantName;
 	}
 
 	// click on order Details Method

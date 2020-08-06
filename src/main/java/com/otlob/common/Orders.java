@@ -12,7 +12,6 @@ public class Orders {
 	private static String url = System.getProperty("gui.baseURL");
 
 	private By searchBox_input = By.xpath("//input[@name='mapFirstSearch']");
-//	private By findRestaurants_button = By.xpath("//button[text()='Find Restaurants']");
 	private By searchedPlace_number;
 	private By deliverHere_button = By.xpath("//span[text()='Deliver Here']");
 	private By address_text = By.xpath("//span[contains(@class,'active-crumb')]");
@@ -35,9 +34,11 @@ public class Orders {
 	private By placeOrder_button = By.xpath("//button[text()='Place Order']");
 	private By orderStatus_text = By.xpath("//h1[@class='f-28 bold f-23-m']");
 	private By home_button = By.xpath("//a[@class='nav-link']/*[@class='nav-logo-img']");
-	
-	
-	
+	private By numberOfItems_text = By.xpath("//span/b[@class='ng-binding']");
+	private By orderName_text = By.xpath("//p[@class='f-15 m-b-0 ng-binding']");
+	private By restaurantStatus_text = By.xpath("//b[contains(@ng-class,'red-text')]");
+	private By continueOrdering_button = By.xpath("// button[text()='Continue']");
+	private By cartMessage_text = By.xpath("//p[@class='p-t-md f-14']");
 
 	ArrayList<String> OrderDetails = new ArrayList<String>();
 
@@ -64,15 +65,22 @@ public class Orders {
 		ElementActions.click(driver, deliverHere_button);
 		OrderDetails.add(ElementActions.getText(driver, address_text));
 		ElementActions.type(driver, searchRestaurant_input, Order[2]);
-		OrderDetails.add(ElementActions.getText(driver, searchResult_input));
 		ElementActions.click(driver, searchResult_input);
 		ElementActions.type(driver, searchForMeal_input, Order[3]);
+		OrderDetails.add(ElementActions.getText(driver, orderName_text));
 		ElementActions.click(driver, addItemToCart_button);
+		String RestaurantStatus = ElementActions.getText(driver, restaurantStatus_text);
+		if (RestaurantStatus.equalsIgnoreCase("busy")) {
+			ElementActions.click(driver, continueOrdering_button);
+		}
 		setNumberOfItems(convertStringToInteger(Order[4]));
 		ElementActions.click(driver, large_radioButton);
-		OrderDetails.add(ElementActions.getText(driver, largePrice_text));
+		String pricePerItem = ElementActions.getText(driver, largePrice_text);
 		ElementActions.click(driver, addToCart_button);
-		
+		String FinalAmount = calculatePrice(Order[4], pricePerItem.substring(1, pricePerItem.length() - 1));
+		OrderDetails.add(FinalAmount);
+		String NumberOfItems = ElementActions.getText(driver, numberOfItems_text);
+		OrderDetails.add(NumberOfItems);
 		return OrderDetails;
 	}
 
@@ -127,6 +135,36 @@ public class Orders {
 	public int convertStringToInteger(String string) {
 		int Number = Integer.parseInt(string);
 		return Number;
+	}
+
+	// convert string to integer method
+	public double convertStringToDouble(String string) {
+		double Number = Double.parseDouble(string);
+		return Number;
+	}
+
+	// calculate the total amount method
+	public String calculatePrice(String NumberOfItems, String PricePerItem) {
+		double Result = (convertStringToInteger(NumberOfItems) * convertStringToDouble(PricePerItem));
+		return "" + Result;
+	}
+	// Search For Restaurant method
+	public Orders searchForRestaurant(String[] Order) {
+		ElementActions.type(driver, searchBox_input, Order[0]);
+		ElementActions.click(driver, getSearchResultNumber(convertStringToInteger(Order[1])));
+		ElementActions.click(driver, deliverHere_button);
+		ElementActions.type(driver, searchRestaurant_input, Order[2]);
+		ElementActions.click(driver, searchResult_input);
+		ElementActions.type(driver, searchForMeal_input, Order[3]);
+		return this ; 
+	}
+
+	
+	
+	// get Cart Message text method
+	public String getCartMessage() {
+		String CartMessage = ElementActions.getText(driver, cartMessage_text);
+		return CartMessage;
 	}
 
 }

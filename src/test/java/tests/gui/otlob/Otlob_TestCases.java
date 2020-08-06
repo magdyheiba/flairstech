@@ -25,34 +25,38 @@ public class Otlob_TestCases {
 	String[] login;
 	String[] Order;
 	String[] OrderDetails;
+	String[] searchForOrder;
 	ArrayList<String> orderSpecifications = new ArrayList<String>();
 
-//	// Test cases
-//	@Test(description = "Order - Page", groups = { "gui" })
-//	@Description("When I enter Home page, then I can search for a region and restaurant and can add order to cart and checkout")
-//	public void addNewOrder() {
-//		new Home(driver).navigate();
-//		new Orders(driver).searchForRestaurantAndAddItemToCart(Order);
-//		new Home(driver).login(login);
-//		new Orders(driver).placeOrder(OrderDetails);
-//		String OrderStatus = new Orders(driver).getOrderStatus();
-//		Assertions.assertEquals("Successfully", OrderStatus, AssertionComparisonType.CONTAINS, AssertionType.POSITIVE);
-//	}
+	// Test cases
+	@Test(description = "Order - Page", groups = { "gui" })
+	@Description("When I enter Home page, then I can search for a region and restaurant and can add order to cart and checkout")
+	public void addNewOrder() {
+		new Home(driver).navigate();
+		new Orders(driver).searchForRestaurantAndAddItemToCart(Order);
+		new Home(driver).login(login);
+		new Orders(driver).placeOrder(OrderDetails);
+		String OrderStatus = new Orders(driver).getOrderStatus();
+		Assertions.assertEquals("Successfully", OrderStatus, AssertionComparisonType.CONTAINS, AssertionType.POSITIVE);
+	}
 
 	@Test(description = "Home - Verify", groups = { "gui" })
 	@Description("When I enter Home page, then I can search for a region and restaurant and can add order to cart and checkout")
-	public void addItemToCart() {
+	public void addItemToCartAndVerifyIt() {
 		new Home(driver).navigate();
 		orderSpecifications = new Orders(driver).searchForRestaurantAndAddItemToCart(Order);
-		new Home(driver).login(login).navigateToHomeScreen();
-		String ActualOrderName = new Home(driver).clickOnMyOrders().getOrderName();
+		new Home(driver).login(login).navigateToHomeScreen().clickOnMyOrders();
 		String ActualOrderPrice = new Home(driver).getOrderPrice();
 		String ActualOrderQuantity = new Home(driver).getOrderQuantity();
-		Assertions.assertEquals(orderSpecifications.get(0), ActualOrderName, AssertionComparisonType.EQUALS,
+		String ActualOrderAddress = new Home(driver).getOrderAddress();
+		String ActualOrderName = new Home(driver).getOrderName();
+		Assertions.assertEquals(orderSpecifications.get(0), ActualOrderAddress, AssertionComparisonType.CONTAINS,
 				AssertionType.POSITIVE);
-		Assertions.assertEquals(orderSpecifications.get(1), ActualOrderPrice, AssertionComparisonType.EQUALS,
+		Assertions.assertEquals(orderSpecifications.get(1), ActualOrderName, AssertionComparisonType.CONTAINS,
 				AssertionType.POSITIVE);
-		Assertions.assertEquals(orderSpecifications.get(2), ActualOrderQuantity, AssertionComparisonType.EQUALS,
+		Assertions.assertEquals(orderSpecifications.get(2), ActualOrderPrice, AssertionComparisonType.CONTAINS,
+				AssertionType.POSITIVE);
+		Assertions.assertEquals(orderSpecifications.get(3), ActualOrderQuantity, AssertionComparisonType.CONTAINS,
 				AssertionType.POSITIVE);
 
 	}
@@ -63,8 +67,10 @@ public class Otlob_TestCases {
 		new Home(driver).navigate();
 		new Orders(driver).searchForRestaurantAndAddItemToCart(Order);
 		new Home(driver).login(login);
-		new Orders(driver).navigateToHomeScreen().clickOnMyOrders().removeItemFromMyOrders().verifyElementDisappeared();
-
+		new Orders(driver).navigateToHomeScreen().clickOnMyOrders().removeItemFromMyOrders();
+		String CartMessage = new Orders(driver).searchForRestaurant(searchForOrder).getCartMessage();
+		Assertions.assertEquals("There are no items in your cart", CartMessage, AssertionComparisonType.EQUALS,
+				AssertionType.POSITIVE);
 	}
 
 	// read from excel
@@ -101,6 +107,17 @@ public class Otlob_TestCases {
 
 	}
 
+	private String[] readSearchForOrderTestData() {
+		ArrayList<String> Orders = new ArrayList<String>();
+		String colName = "Data1";
+		String sheetName = "Orders";
+		Orders.add(Otlob.get().getCellData(sheetName, "city", colName));
+		Orders.add(Otlob.get().getCellData(sheetName, "search result", colName));
+		Orders.add(Otlob.get().getCellData(sheetName, "restaurant name", colName));
+		Orders.add(Otlob.get().getCellData(sheetName, "meal", colName));
+		return Orders.toArray(new String[0]);
+	}
+
 	@BeforeClass
 	public void beforeClass() {
 		Otlob.set(new ExcelFileManager(System.getProperty("testDataFolderPath") + "Otlob.xlsx"));
@@ -109,6 +126,7 @@ public class Otlob_TestCases {
 		login = readLoginTestData();
 		Order = readOrderTestData();
 		OrderDetails = readOrderDetailsTestData();
+		searchForOrder = readSearchForOrderTestData();
 	}
 
 	@BeforeMethod(onlyForGroups = { "gui" })
