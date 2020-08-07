@@ -1,13 +1,11 @@
 package tests.gui.otlob;
 
 import java.util.ArrayList;
-
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
 import com.otlob.common.Home;
 import com.otlob.common.Orders;
 import com.shaft.gui.browser.BrowserActions;
@@ -22,25 +20,33 @@ import io.qameta.allure.Description;
 public class Otlob_TestCases {
 	private ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 	private ThreadLocal<ExcelFileManager> Otlob = new ThreadLocal<>();
+	ArrayList<String> orderSpecifications = new ArrayList<String>();
 	String[] login;
 	String[] Order;
 	String[] OrderDetails;
 	String[] searchForOrder;
-	ArrayList<String> orderSpecifications = new ArrayList<String>();
 
 	// Test cases
-	@Test(description = "Order - Page", groups = { "gui" })
+	@Test(description = "Order - Page", groups = { "gui" }, priority = 1)
 	@Description("When I enter Home page, then I can search for a region and restaurant and can add order to cart and checkout")
 	public void addNewOrder() {
 		new Home(driver).navigate();
 		new Orders(driver).searchForRestaurantAndAddItemToCart(Order);
 		new Home(driver).login(login);
+		String RestaurantStatus = new Orders(driver).getRestaurantStatus();
 		new Orders(driver).placeOrder(OrderDetails);
-		String OrderStatus = new Orders(driver).getOrderStatus();
-		Assertions.assertEquals("Successfully", OrderStatus, AssertionComparisonType.CONTAINS, AssertionType.POSITIVE);
+		if (RestaurantStatus.equalsIgnoreCase("busy")) {
+			String busyRestaurantMessage = new Orders(driver).getBusyRestaurantMessage();
+			Assertions.assertEquals("Otlob delivery is not available", busyRestaurantMessage,
+					AssertionComparisonType.CONTAINS, AssertionType.POSITIVE);
+		} else {
+			String OrderStatus = new Orders(driver).getOrderStatus();
+			Assertions.assertEquals("Your order has been placed successfully", OrderStatus,
+					AssertionComparisonType.CONTAINS, AssertionType.POSITIVE);
+		}
 	}
 
-	@Test(description = "Home - Verify", groups = { "gui" })
+	@Test(description = "Home - Verify", groups = { "gui" }, priority = 2)
 	@Description("When I enter Home page, then I can search for a region and restaurant and can add order to cart and checkout")
 	public void addItemToCartAndVerifyIt() {
 		new Home(driver).navigate();
@@ -61,7 +67,7 @@ public class Otlob_TestCases {
 
 	}
 
-	@Test(description = "Home - Page", dependsOnMethods = { "addItemToCart" }, groups = { "gui" })
+	@Test(description = "Home - Page", groups = { "gui" }, priority = 3)
 	@Description("When I enter Home page, then I can search for a region and restaurant and can add order to cart and then remove it")
 	public void removeItemFromCart() {
 		new Home(driver).navigate();

@@ -37,8 +37,11 @@ public class Orders {
 	private By numberOfItems_text = By.xpath("//span/b[@class='ng-binding']");
 	private By orderName_text = By.xpath("//p[@class='f-15 m-b-0 ng-binding']");
 	private By restaurantStatus_text = By.xpath("//b[contains(@ng-class,'red-text')]");
-	private By continueOrdering_button = By.xpath("// button[text()='Continue']");
+	private By continueOrdering_button = By.xpath("//button[text()='Continue']");
 	private By cartMessage_text = By.xpath("//p[@class='p-t-md f-14']");
+	private By busyModelHeader_text = By.xpath("//p[@class='text-center f-16 m-y']");
+
+	
 
 	ArrayList<String> OrderDetails = new ArrayList<String>();
 
@@ -69,8 +72,7 @@ public class Orders {
 		ElementActions.type(driver, searchForMeal_input, Order[3]);
 		OrderDetails.add(ElementActions.getText(driver, orderName_text));
 		ElementActions.click(driver, addItemToCart_button);
-		String RestaurantStatus = ElementActions.getText(driver, restaurantStatus_text);
-		if (RestaurantStatus.equalsIgnoreCase("busy")) {
+		if (getRestaurantStatus().equalsIgnoreCase("busy")) {
 			ElementActions.click(driver, continueOrdering_button);
 		}
 		setNumberOfItems(convertStringToInteger(Order[4]));
@@ -118,6 +120,20 @@ public class Orders {
 		return OrderStatus;
 	}
 
+	// get Restaurant Status method
+	public String getRestaurantStatus() {
+		String RestaurantStatus = ElementActions.getText(driver, restaurantStatus_text);
+		return RestaurantStatus;
+	}
+	// get Restaurant Status method
+		public String getBusyRestaurantMessage() {
+			String RestaurantStatus = ElementActions.getText(driver, busyModelHeader_text);
+			return RestaurantStatus;
+		}
+	
+	
+	
+
 	// set number of items method
 	public void setNumberOfItems(int Items) {
 		for (int i = 0; i < Items - 1; i++) {
@@ -148,6 +164,7 @@ public class Orders {
 		double Result = (convertStringToInteger(NumberOfItems) * convertStringToDouble(PricePerItem));
 		return "" + Result;
 	}
+
 	// Search For Restaurant method
 	public Orders searchForRestaurant(String[] Order) {
 		ElementActions.type(driver, searchBox_input, Order[0]);
@@ -156,11 +173,9 @@ public class Orders {
 		ElementActions.type(driver, searchRestaurant_input, Order[2]);
 		ElementActions.click(driver, searchResult_input);
 		ElementActions.type(driver, searchForMeal_input, Order[3]);
-		return this ; 
+		return this;
 	}
 
-	
-	
 	// get Cart Message text method
 	public String getCartMessage() {
 		String CartMessage = ElementActions.getText(driver, cartMessage_text);
