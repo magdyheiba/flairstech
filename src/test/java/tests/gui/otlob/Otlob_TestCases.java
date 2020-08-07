@@ -37,8 +37,9 @@ public class Otlob_TestCases {
 		new Orders(driver).placeOrder(OrderDetails);
 		if (RestaurantStatus.equalsIgnoreCase("busy")) {
 			String busyRestaurantMessage = new Orders(driver).getBusyRestaurantMessage();
-			Assertions.assertEquals("Otlob delivery is not available", busyRestaurantMessage,
-					AssertionComparisonType.CONTAINS, AssertionType.POSITIVE);
+			Assertions.assertEquals(
+					"KFC is currently busy and is not accepting orders at this time. Would you like to view more restaurants near you?",
+					busyRestaurantMessage, AssertionComparisonType.CONTAINS, AssertionType.POSITIVE);
 		} else {
 			String OrderStatus = new Orders(driver).getOrderStatus();
 			Assertions.assertEquals("Your order has been placed successfully", OrderStatus,
