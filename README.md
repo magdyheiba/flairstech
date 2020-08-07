@@ -5,12 +5,22 @@
 
 This a simple assessment for flairstech company
 
-•	Implement a test automation framework with an object-oriented design. 
-•	Implement customized reports including screenshots for failures. 
-•	Follow checkout procedure
-•	Confirm order by selecting bank wire option
-• Validate order was placed from order history page.
-• data driven scenarios
+*	Implement a test automation framework with an object-oriented design. 
+*	Implement customized reports including screenshots for failures. 
+*	Follow checkout procedure
+* Validate order was placed from order history page.
+* data driven scenario
+*	Select city , region , restaurant and order and verify them 
+*	Login to the website with test email.
+*	Add order to the cart 
+*	Remove order from the cart
+*	Checkout the cart and perform an actual order 
+*	Handle the case if the restaurant is busy 
+*	Verify the order details (Quantity, name , address and price)
+*	Verify the amount that should be paid to the restaurant 
+*	Pay by cash 
+*	Asserting on the successful and failed order 
+
 
 ### Tech
 
@@ -81,6 +91,14 @@ This Assessment is currently working with [Testng](http://dl.bintray.com/testng-
 ### Important Notes:
 - this a GUI selenium Java project but using SHAFT_Engine 
 - By default reports will be automatically generated but you can check the result of the the test by running generate_allure_report.bat
+-	If the test mail gets blocked please change it with another test mail because of the fake ordering  
+- you can check the results through this [link](https://drive.google.com/file/d/1VcjITkKkF0zFpPx1uuWSiIpfIHGWUmSx/view?usp=sharing)
+-	You can change the test mail at the script through excel sheet at this path src/test/recources/TestDataFiles/Otlob.xlsx  
+-	First of all we have to clone the project from github or download it from the drive and then save POM.xml to install the dependencies and install testing plugin ,then we have 3 options :-
+•	Run the project from Otlob_TestCases.java
+•	Run the project from sampleTestSuite.xml
+•	Run the project remotely by docker-compose and selenium Grid  through docker-compose_native.yml and following the instructions inside it
+
 
 License
 ----
