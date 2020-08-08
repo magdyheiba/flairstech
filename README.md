@@ -94,7 +94,7 @@ This Assessment is currently working with [Testng](http://dl.bintray.com/testng-
 -	If the test mail gets blocked please change it with another test mail because of the fake ordering  
 - you can check the results through this [link](https://drive.google.com/file/d/1VcjITkKkF0zFpPx1uuWSiIpfIHGWUmSx/view?usp=sharing)
 -	You can change the test mail at the script through excel sheet at this path src/test/recources/TestDataFiles/Otlob.xlsx  
--	First of all we have to clone the project from github or download it from the drive and then save POM.xml to install the dependencies and install testing plugin ,then we have 3 options :-
+-	First of all we have to clone the project from github or download it from the drive and then save POM.xml to install the dependencies and install testng plugin ,then we have 3 options :-
 •	Run the project from Otlob_TestCases.java
 •	Run the project from sampleTestSuite.xml
 •	Run the project remotely by docker-compose and selenium Grid  through docker-compose_native.yml and following the instructions inside it
